@@ -69,18 +69,17 @@ class Board:
         return True
 
     def __str__(self):
-        visible_board = [[None for _ in range(self.dimSize)] for _ in range(self.dimSize)]
+        visibleBoard = [[None for _ in range(self.dimSize)] for _ in range(self.dimSize)]
         for row in range(self.dimSize):
             for col in range(self.dimSize):
                 if (row,col) in self.dugged:
-                    visible_board[row][col] = str(self.board[row][col])
+                    visibleBoard[row][col] = str(self.board[row][col])
                 else:
-                    visible_board[row][col] = ' '
-        
-        string_rep = ''
+                    visibleBoard[row][col] = ' '
+    
         widths = []
         for idx in range(self.dimSize):
-            columns = map(lambda x: x[idx], visible_board)
+            columns = map(lambda x: x[idx], visibleBoard)
             widths.append(
                 len(
                     max(columns, key = len)
@@ -88,37 +87,41 @@ class Board:
             )
 
         indices = [i for i in range(self.dimSize)]
-        indices_row = '   '
-        cells = []
-        for idx, col in enumerate(indices):
-            format = '%-' + str(widths[idx]) + "s"
-            cells.append(format % (col))
-        indices_row += '  '.join(cells)
-        indices_row += '  \n'
+        indicesRow = '    '
+        for i in indices:
+            if i < 10:
+                indicesRow += f'{i}   '
+            else:
+                indicesRow += f'{i}  '
+        indicesRow += '   \n'
         
-        for i in range(len(visible_board)):
-            row = visible_board[i]
-            string_rep += f'{i} |'
+        stringRep = ''
+        for i in range(len(visibleBoard)):
+            row = visibleBoard[i]
+            if i < 10:
+                stringRep += f'{i}  |'
+            else:
+                stringRep += f'{i} |'
             cells = []
             for idx, col in enumerate(row):
                 format = '%-' + str(widths[idx]) + "s"
                 cells.append(format % (col))
-            string_rep += ' |'.join(cells)
-            string_rep += ' |\n'
+            stringRep += '  |'.join(cells)
+            stringRep += '  |\n'
 
-        str_len = int(len(string_rep) / self.dimSize)
-        string_rep = indices_row + '-'*str_len + '\n' + string_rep + '-'*str_len
+        strLen = int(len(stringRep) / self.dimSize)
+        stringRep = indicesRow + '-'*strLen + '\n' + stringRep + '-'*strLen
 
-        return string_rep
+        return stringRep
 
 
-def main(dimSize = 10, numBombs = 13):
+def main(dimSize = 16, numBombs = 40):
     board = Board(dimSize, numBombs)
     while len(board.dugged) < board.dimSize ** 2 - numBombs:
         print(board)
         print(f"Your current score is: {board.score}")
-        user_input = re.split(',(\\s)*', input("Where would you like to dig? Input as row,col: "))
-        row, col = int(user_input[0]), int(user_input[-1])
+        userInput = re.split(',(\\s)*', input("Where would you like to dig? Input as row,col: "))
+        row, col = int(userInput[0]), int(userInput[-1])
         if row < 0 or row >= board.dimSize or col < 0 or col >= dimSize:
             print("Invalid location. Try again.")
             continue

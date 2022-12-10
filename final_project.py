@@ -8,8 +8,8 @@
 import random
 import re
 
-class Board: 
-    def __init__(self, dimSize, numBombs):
+class Board: #this load the new board
+    def __init__(self, dimSize, numBombs):#Dimensions of the board
         self.dimSize = dimSize
         self.numBombs = numBombs
 
@@ -19,7 +19,7 @@ class Board:
         self.dugged = set()
         self.score = 0
 
-    def makeNewBoard(self):
+    def makeNewBoard(self): #This make the new board every time when the bomb is planted.  
         board = [[0 for _ in range (self.dimSize)] for _ in range(self.dimSize)]
 
         bombsPlanted = 0
@@ -43,7 +43,7 @@ class Board:
                     continue
                 self.board[r][c] = self.getNumNeighborBomb(r,c)
 
-    def getNumNeighborBomb(self, row, column):
+    def getNumNeighborBomb(self, row, column): #Function created to discover the places next to the selected area
         NumNeighborBomb = 0 
         for r in range(max(0, row-1),min(self.dimSize-1, row+1)+1):
             for c in range (max(0, column-1), min(self.dimSize-1, column+1)+1):
@@ -53,7 +53,7 @@ class Board:
                     NumNeighborBomb +=1
         return NumNeighborBomb
 
-    def dig(self, row, column):
+    def dig(self, row, column): #When the user dig a place will ad places next to the area. 
         self.dugged.add((row, column))
 
         if  self.board[row][column] == "*":
@@ -115,26 +115,27 @@ class Board:
         return stringRep
 
 
-def main(dimSize = 16, numBombs = 40):
+def main(dimSize = 16, numBombs = 40):#The size of the board an the number of the bombs inside of it
+    # sourcery skip: hoist-statement-from-if
     board = Board(dimSize, numBombs)
     while len(board.dugged) < board.dimSize ** 2 - numBombs:
         print(board)
-        print(f"Your current score is: {board.score}")
+        print(f"Your current score is: {board.score}") #Prompt to show score every time. 
         userInput = re.split(',(\\s)*', input("Where would you like to dig? Input as row,col: "))
         row, col = int(userInput[0]), int(userInput[-1])
         if row < 0 or row >= board.dimSize or col < 0 or col >= dimSize:
-            print("Invalid location. Try again.")
+            print("Invalid location. Try again.") #When you already show a place already taken
             continue
 
-        safe = board.dig(row, col)
+        safe = board.dig(row, col)#if user choose a place  not safe  break the while.
         if not safe:
             break
 
-    if safe:
+    if safe: #condition  to show if the user is in a safe place of not.
         print("Game Won!")
-        print(f"Your final score was: {board.score}")
+        print(f"Your final score was: {board.score}")#show the actul point
     else:
-        print("Game Over!")
+        print("Game Over!")#if not game over and show the final board.
         board.dugged = [(r,c) for r in range(board.dimSize) for c in range(board.dimSize)]
         print(board)
         print(f"Your final score was: {board.score}")

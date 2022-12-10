@@ -1,8 +1,8 @@
 #Author: Fernando Arellano
 #Creation Date: 2022/12/09 
-#Modification Date
+#Modification Date: 2022/12/10
 #Game: MineSweeper 
-#Descrition:
+#Description: This game is a classic game called MineSweeper, the idea is to search places in the matrix in a safe place, if not a bomb will explode, if you choose a place safe you will be discovering  and sum points!
 
 
 import random
@@ -18,6 +18,18 @@ class Board: #this load the new board
 
         self.dugged = set()
         self.score = 0
+    
+    def welcome(self): #Welcome intro and explanation for the user, the idea is the same as classic minesweeper
+        print("                ----------------------------------          ")
+        print("                ***** Welcome to MineSweeper *****          ")
+        print("                 ----------------------------------          ")
+        print("Minesweeper is single-player logic-based computer game played on rectangular board")
+        print("whose object is to locate a predetermined number of randomly-placed 'mines' you need")
+        print("to chosse by clicking on 'safe' places (squares) while avoiding the places without mines,")
+        print("you will be earning point every time you clikc in a safe place.")
+        print("            ----------------> Let's play! <----------------      ")
+
+
 
     def makeNewBoard(self): #This make the new board every time when the bomb is planted.  
         board = [[0 for _ in range (self.dimSize)] for _ in range(self.dimSize)]
@@ -76,7 +88,7 @@ class Board: #this load the new board
                     visibleBoard[row][col] = str(self.board[row][col])
                 else:
                     visibleBoard[row][col] = ' '
-    
+
         widths = []
         for idx in range(self.dimSize):
             columns = map(lambda x: x[idx], visibleBoard)
@@ -94,7 +106,7 @@ class Board: #this load the new board
             else:
                 indicesRow += f'{i}  '
         indicesRow += '   \n'
-        
+
         stringRep = ''
         for i in range(len(visibleBoard)):
             row = visibleBoard[i]
@@ -104,7 +116,7 @@ class Board: #this load the new board
                 stringRep += f'{i} |'
             cells = []
             for idx, col in enumerate(row):
-                format = '%-' + str(widths[idx]) + "s"
+                format = f'%-{str(widths[idx])}s'
                 cells.append(format % (col))
             stringRep += '  |'.join(cells)
             stringRep += '  |\n'
@@ -118,6 +130,7 @@ class Board: #this load the new board
 def main(dimSize = 16, numBombs = 40):#The size of the board an the number of the bombs inside of it
     # sourcery skip: hoist-statement-from-if
     board = Board(dimSize, numBombs)
+    board.welcome()
     while len(board.dugged) < board.dimSize ** 2 - numBombs:
         print(board)
         print(f"Your current score is: {board.score}") #Prompt to show score every time. 

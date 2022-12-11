@@ -3,6 +3,7 @@
 #Modification Date: 2022/12/10
 #Game: MineSweeper 
 #Description: This game is a classic game called MineSweeper, the idea is to search places in the matrix in a safe place, if not a bomb will explode, if you choose a place safe you will be discovering  and sum points!
+#the idea of the program is goign to bulit a board, when it will be showing tha selections and bombsc
 
 
 import random #Import module of random to put the bombs

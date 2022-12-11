@@ -5,25 +5,25 @@
 #Description: This game is a classic game called MineSweeper, the idea is to search places in the matrix in a safe place, if not a bomb will explode, if you choose a place safe you will be discovering  and sum points!
 
 
-import random
-import re
+import random #Import module of random to put the bombs
+import re #Import Module add patrons to identify strings 
 
 class Board: #this load the new board
     def __init__(self, dimSize, numBombs):#Dimensions of the board
-        self.dimSize = dimSize
-        self.numBombs = numBombs
+        self.dimSize = dimSize#define size
+        self.numBombs = numBombs #define number of bomb
 
-        self.board = self.makeNewBoard()
+        self.board = self.makeNewBoard() # plant the bombs
         self.assignValues()
 
-        self.dugged = set()
-        self.score = 0
+        self.dugged = set() #we need to enter 0,0 to put a position
+        self.score = 0 #set variable score to cero 
     
     def welcome(self): #Welcome intro and explanation for the user, the idea is the same as classic minesweeper
         print("                ----------------------------------          ")
-        print("                ***** Welcome to MineSweeper *****          ")
+        print("                ***** Welcome to MineSweeper *****          ") #just a welcome message
         print("                 ----------------------------------          ")
-        print("Minesweeper is single-player logic-based computer game played on rectangular board")
+        print("Minesweeper is single-player logic-based computer game played on rectangular board") #Little explain about how the game works. 
         print("whose object is to locate a predetermined number of randomly-placed 'mines' you need")
         print("to chosse by clicking on 'safe' places (squares) while avoiding the places without mines,")
         print("you will be earning point every time you clikc in a safe place.")
@@ -32,23 +32,23 @@ class Board: #this load the new board
 
 
     def makeNewBoard(self): #This make the new board every time when the bomb is planted.  
-        board = [[0 for _ in range (self.dimSize)] for _ in range(self.dimSize)]
+        board = [[0 for _ in range (self.dimSize)] for _ in range(self.dimSize)]  #Create the 2D Board by console
 
         bombsPlanted = 0
         while bombsPlanted < self.numBombs:
             location = random.randint(0, self.dimSize**2 -1)
-            row = location // self.dimSize
-            column = location % self.dimSize
+            row = location // self.dimSize #Indexes and position for rows
+            column = location % self.dimSize #indexes and position for columns
 
-            if board [row][column] == '*':
+            if board [row][column] == '*': #this is if plnted a bomb already so keep going 
                 continue
 
-            board[row][column] =  '*'
+            board[row][column] =  '*' #action to plant the  bomb
             bombsPlanted += 1
 
         return board
 
-    def assignValues(self):
+    def assignValues(self):# assign values to the loop an get the  neighbor spaces if there a bomb. 
         for r in range(self.dimSize):
             for c in range(self.dimSize):
                 if self.board[r][c] == "*":
@@ -57,7 +57,7 @@ class Board: #this load the new board
 
     def getNumNeighborBomb(self, row, column): #Function created to discover the places next to the selected area
         NumNeighborBomb = 0 
-        for r in range(max(0, row-1),min(self.dimSize-1, row+1)+1):
+        for r in range(max(0, row-1),min(self.dimSize-1, row+1)+1): #to iterate each neighboard position and sum number of bombs
             for c in range (max(0, column-1), min(self.dimSize-1, column+1)+1):
                 if r == row and c == column:
                     continue
@@ -65,8 +65,8 @@ class Board: #this load the new board
                     NumNeighborBomb +=1
         return NumNeighborBomb
 
-    def dig(self, row, column): #When the user dig a place will ad places next to the area. 
-        self.dugged.add((row, column))
+    def dig(self, row, column): 
+        self.dugged.add((row, column)) #keep the track of digginn
 
         if  self.board[row][column] == "*":
             return False
@@ -76,11 +76,11 @@ class Board: #this load the new board
         for r in range(max(0, row-1), min(self.dimSize-1, row+1)+1):
             for c in range (max(0, column-1), min(self.dimSize-1, column+1)+1):
                 if (r, c) in self.dugged:
-                    continue
+                    continue #to not dig if is already digged by user
                 self.dig(r, c)
         return True
 
-    def __str__(self):
+    def __str__(self): #array to show what user sees
         visibleBoard = [[None for _ in range(self.dimSize)] for _ in range(self.dimSize)]
         for row in range(self.dimSize):
             for col in range(self.dimSize):
@@ -89,7 +89,7 @@ class Board: #this load the new board
                 else:
                     visibleBoard[row][col] = ' '
 
-        widths = []
+        widths = [] #Get max columns width fro printing
         for idx in range(self.dimSize):
             columns = map(lambda x: x[idx], visibleBoard)
             widths.append(
@@ -126,12 +126,12 @@ class Board: #this load the new board
 
         return stringRep
 
-
+#Play the game itself
 def main(dimSize = 16, numBombs = 40):#The size of the board an the number of the bombs inside of it
     # sourcery skip: hoist-statement-from-if
     board = Board(dimSize, numBombs)
-    board.welcome()
-    while len(board.dugged) < board.dimSize ** 2 - numBombs:
+    board.welcome() #printing welcome
+    while len(board.dugged) < board.dimSize ** 2 - numBombs:#if dug space get point and space between 
         print(board)
         print(f"Your current score is: {board.score}") #Prompt to show score every time. 
         userInput = re.split(',(\\s)*', input("Where would you like to dig? Input as row,col: "))
